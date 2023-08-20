@@ -30,9 +30,9 @@ function fakeCurrencyDetectionGui()
             result = performFakeCurrencyDetection(selectedImagePath);
             
             if result
-                resultMessage = 'The image is not detected as fake currency.';
-            else
                 resultMessage = 'The image is detected as fake currency.';
+            else
+                resultMessage = 'The image is not detected as fake currency.';
             end
 
             set(resultText, 'String', resultMessage);
@@ -43,10 +43,12 @@ function fakeCurrencyDetectionGui()
     function result = performFakeCurrencyDetection(imagePath)
         result = true; % Initialize result as true (image is initially considered fake)
     
+        % Replace this with your actual detection functions
+        % Each function should return false for the image being considered genuine
         if ~checkFeature1(imagePath) || ~checkFeature2(imagePath) || ...
            ~checkFeature3(imagePath) || ~checkFeature4(imagePath) || ...
            ~checkFeature5(imagePath) || ~checkFeature6(imagePath)
-            result = false; % If any feature indicates the image is NOT fake currency, set result to false
+            result = false; % If any feature indicates the image is genuine, set result to false
         end
     end
 
@@ -55,32 +57,37 @@ function fakeCurrencyDetectionGui()
     function result = checkFeature1(imagePath)
         % Implement feature 1 detection logic
         % Return true if the feature is detected as indicative of fake currency
-        result = true; % Placeholder logic
+        result = rand() > 0.5; % Placeholder logic
     end
 
     function result = checkFeature2(imagePath)
         % Implement feature 2 detection logic
-        result = false; % Placeholder logic
+        % Return true if the feature is detected as indicative of fake currency
+        result = rand() > 0.5; % Placeholder logic
     end
     
     function result = checkFeature3(imagePath)
-        % Implement feature 3 detection logic
-        result = true; % Placeholder logic
+        % Implement feature 2 detection logic
+        % Return true if the feature is detected as indicative of fake currency
+        result = rand() > 0.5; % Placeholder logic
     end
 
     function result = checkFeature4(imagePath)
-        % Implement feature 4 detection logic
-        result = true; % Placeholder logic
+        % Implement feature 2 detection logic
+        % Return true if the feature is detected as indicative of fake currency
+        result = rand() > 0.5; % Placeholder logic
     end
 
     function result = checkFeature5(imagePath)
-        % Implement feature 5 detection logic
-        result = true; % Placeholder logic
+        % Implement feature 2 detection logic
+        % Return true if the feature is detected as indicative of fake currency
+        result = rand() > 0.5; % Placeholder logic
     end
 
     function result = checkFeature6(imagePath)
-        % Implement feature 6 detection logic
-        result = true; % Placeholder logic
+        % Implement feature 2 detection logic
+        % Return true if the feature is detected as indicative of fake currency
+        result = rand() > 0.5; % Placeholder logic
     end
 
 end
