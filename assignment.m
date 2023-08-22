@@ -60,7 +60,7 @@ function fakeCurrencyDetectionGui()
 
     function result = checkFeature2(imagePath)
         % Implement feature 2 detection logic
-        result = false; % Placeholder logic
+        result = true; % Placeholder logic
     end
     
     function result = checkFeature3(imagePath)
