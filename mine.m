@@ -4,21 +4,26 @@ currentFolderPath = pwd;
 disp(['Current folder path: ' currentFolderPath]);
 
 % Load the real image
-imagePath ='C:\Users\Felicia\OneDrive\Desktop\100.jpg';
+imagePath ='C:\Users\Felicia\OneDrive\Desktop\100.png';
 currencyImage = imread(imagePath);
 
 % Input Image
-imagePathInput ='C:\Users\Felicia\OneDrive\Desktop\F4.jpg';
+imagePathInput ='C:\Users\Felicia\OneDrive\Desktop\F4.png';
 currencyImageInput = imread(imagePathInput);
 
-% Resize the input image to match the dimensions of currencyImage
-currencyImageInput = imresize(currencyImageInput, size(currencyImage));
+% Determine the maximum dimensions
+maxWidth = max(size(currencyImage, 2), size(currencyImageInput, 2));
+maxHeight = max(size(currencyImage, 1), size(currencyImageInput, 1));
+
+% Resize both images to the maximum dimensions
+currencyImage = imresize(currencyImage, [maxHeight, maxWidth]);
+currencyImageInput = imresize(currencyImageInput, [maxHeight, maxWidth]);
 
 % Define the dimensions of the crop region
 cropWidth = 670;   % Specify the width of the crop region
 cropHeight = 100;  % Specify the height of the crop region
 cropTopOffset = 20; % Specify the offset from the top to adjust cropping
-cropRightOffset = 700; % Specify the offset from the right to adjust cropping
+cropRightOffset = 650; % Specify the offset from the right to adjust cropping
 
 % Calculate the coordinates for cropping (top middle)
 cropTopLeftX = floor((size(currencyImage, 2) - cropWidth) / 2);
@@ -84,7 +89,7 @@ vectorInput = createWordFrequencyVector(words, recognizedTextInput);
 cosineSimilarity = dot(vectorCropped, vectorInput) / (norm(vectorCropped) * norm(vectorInput));
 
 % Define a threshold for considering the input as fake
-cosineThreshold = 0.8; % Adjust as needed
+cosineThreshold = 0.7; % Adjust as needed
 
 % Compare cosine similarity with the threshold
 if cosineSimilarity >= cosineThreshold
