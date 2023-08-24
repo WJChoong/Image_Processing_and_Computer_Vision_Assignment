@@ -1,0 +1,37 @@
+clc
+
+currentFolderPath = pwd;
+disp(['Current folder path: ' currentFolderPath]);
+
+% Load the real image
+imagePath ='C:\Users\Felicia\OneDrive\Desktop\100.jpg';
+currencyImage = imread(imagePath);
+
+% Fake Image
+imagePathFake ='C:\Users\Felicia\OneDrive\Desktop\F2.jpg';
+currencyImageFake = imread(imagePath);
+
+% Define the dimensions of the crop region
+cropWidth = 700;   % Specify the width of the crop region
+cropHeight = 100;  % Specify the height of the crop region
+
+% Calculate the coordinates for cropping (top middle)
+cropTopLeftX = floor((size(currencyImage, 2) - cropWidth) / 2);
+cropTopLeftY = 1;
+cropBottomRightX = cropTopLeftX + cropWidth - 1;
+cropBottomRightY = cropHeight;
+
+% Calculate the coordinates for cropping (top middle)
+cropTopLeftXFake = floor((size(currencyImage, 2) - cropWidth) / 2);
+cropTopLeftY = 1;
+cropBottomRightX = cropTopLeftX + cropWidth - 1;
+cropBottomRightY = cropHeight;
+
+% Perform cropping
+croppedImage = currencyImage(cropTopLeftY:cropBottomRightY, cropTopLeftX:cropBottomRightX, :);
+
+% Display the cropped image
+imshow(croppedImage);
+
+% Display the cropped image
+imshow(croppedImage);
