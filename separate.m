@@ -1,11 +1,14 @@
-imageFilePath = 'D:\GitHub\Image_Processing_and_Computer_Vision_Assignment\Currency\Real\50.png';
-imageFilePath2 = 'D:\GitHub\Image_Processing_and_Computer_Vision_Assignment\Currency\Real\50.png';
+imageFilePath = 'D:\GitHub\Image_Processing_and_Computer_Vision_Assignment\Currency\10\R2.png';
+imageFilePath2 = 'D:\GitHub\Image_Processing_and_Computer_Vision_Assignment\Currency\Real\10.png';
 originalImage = imread(imageFilePath);
 cloneImage = imread(imageFilePath2);
 originalImage = imresize(originalImage, [344, 789]); % Resize to a common size
 cloneImage = imresize(cloneImage, [344, 789]); % Resize to a common size
 croppedImage = cropImage(originalImage);
 croppedImage2 = cropImage(cloneImage);
+croppedImage = imgaussfilt(croppedImage, 1); % Adjust the standard deviation (second argument) as needed
+croppedImage2 = imgaussfilt(croppedImage2, 1); % Adjust the standard deviation (second argument) as needed
+
 compareHOGFeatures(croppedImage, croppedImage2);
 % Display the original and cropped images
 %subplot(1, 2, 1);
@@ -24,7 +27,7 @@ function croppedImage = cropImage(originalImage)
 end
 
 % lower than 0.80 is true
-function compareHOGFeatures(image1, image2)
+function cosineSim = compareHOGFeatures(image1, image2)
     % Convert the images to grayscale
     grayImage1 = rgb2gray(image1);
     grayImage2 = rgb2gray(image2);
@@ -53,4 +56,5 @@ function compareHOGFeatures(image1, image2)
 
     % Display the cosine similarity
     disp(['Cosine Similarity: ', num2str(cosineSimilarity)]);
+    cosineSim = cosineSimilarity;
 end
