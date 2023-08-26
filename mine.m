@@ -8,7 +8,7 @@ imagePath ='C:\Users\Felicia\OneDrive\Desktop\Currency\Real\50.png';
 currencyImage = imread(imagePath);
 
 % Input Image
-imagePathInput ='C:\Users\Felicia\OneDrive\Desktop\Currency\50\R2.png';
+imagePathInput ='C:\Users\Felicia\OneDrive\Desktop\Currency\50\R3.png';
 currencyImageInput = imread(imagePathInput);
 
 % Determine the maximum dimensions
