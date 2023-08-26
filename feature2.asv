@@ -1,18 +1,15 @@
 % Main code
-imageA = imread('D:\GitHub\Image_Processing_and_Computer_Vision_Assignment\Currency\20\R2.png'); % Load Diagram A image
-imageB = imread('D:\GitHub\Image_Processing_and_Computer_Vision_Assignment\Currency\20\R3.png'); % Load Diagram B image
+imageA = imread('D:\GitHub\Image_Processing_and_Computer_Vision_Assignment\Currency\20\R3.png'); % Load Diagram A image
+imageB = imread('D:\GitHub\Image_Processing_and_Computer_Vision_Assignment\Currency\Real\20.png'); % Load Diagram B image
 imageA = imresize(imageA, [344, 789]); % Resize to a common size
 imageB = imresize(imageB, [344, 789]); % Resize to a common size
 
 croppedImageA = cropImage(imageA);
 croppedImageB = cropImage(imageB);
 
-enhancedImageA = enhanceFeaturesAndEdges(croppedImageA);
-enhancedImageB = enhanceFeaturesAndEdges(croppedImageB);
-
 % Extract features from both images
-featuresA = extractFeaturesA(enhancedImageA);
-featuresB = extractFeaturesB(enhancedImageB);
+featuresA = extractFeaturesA(croppedImageA);
+featuresB = extractFeaturesB(croppedImageB);
 
 % Compare the extracted features
 similarity = compareFeatures(featuresA, featuresB);
@@ -99,11 +96,4 @@ function filteredImage = applyNoiseReduction(inputImage)
     filteredImage = imfilter(inputImage, gaussianKernel, 'same');
 end
 
-function sharpenedImage = enhanceFeaturesAndEdges(inputImage)
-    % Apply unsharp masking to enhance features and edges
-    blurredImage = imgaussfilt(inputImage, 2); % Apply Gaussian blur
-    highPassImage = inputImage - blurredImage;  % High-pass filter
-    sharpeningAmount = 1.5; % Adjust the sharpening amount as needed
-    sharpenedImage = inputImage + sharpeningAmount * highPassImage;
-end
 
