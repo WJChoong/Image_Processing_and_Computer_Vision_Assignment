@@ -4,11 +4,11 @@ currentFolderPath = pwd;
 disp(['Current folder path: ' currentFolderPath]);
 
 % Load the real image
-imagePath ='C:\Users\Felicia\OneDrive\Desktop\Currency\Real\10.png';
+imagePath ='C:\Users\Felicia\OneDrive\Desktop\Currency\Real\50.png';
 currencyImage = imread(imagePath);
 
 % Input Image
-imagePathInput ='C:\Users\Felicia\OneDrive\Desktop\Currency\10\F2.png';
+imagePathInput ='C:\Users\Felicia\OneDrive\Desktop\Currency\50\R2.png';
 currencyImageInput = imread(imagePathInput);
 
 % Determine the maximum dimensions
@@ -20,7 +20,7 @@ currencyImage = imresize(currencyImage, [maxHeight, maxWidth]);
 currencyImageInput = imresize(currencyImageInput, [maxHeight, maxWidth]);
 
 
-option = "10"; 
+option = "50"; 
 
 
 if option == "100"
@@ -35,7 +35,7 @@ elseif option == "50"
     % Define the dimensions of the crop region
     cropWidth = maxWidth / 2;    % Specify the width of the crop region
     cropHeight = maxHeight / 4;  % Specify the height of the crop region
-    cropTopOffset = 15;  % Specify the offset from the top to adjust cropping
+    cropTopOffset = 5;  % Specify the offset from the top to adjust cropping
     cropLeftOffset = 150; % Specify the offset from the left to adjust cropping
     cropRightOffset = 400;% Specify the offset from the right to adjust cropping
 
@@ -52,7 +52,7 @@ elseif option == "10"
     cropWidth = maxWidth / 2.5;    % Specify the width of the crop region
     cropHeight = maxHeight / 4;    % Specify the height of the crop region
     cropTopOffset = 20;  % Specify the offset from the top to adjust cropping
-    cropLeftOffset = 530; % Specify the offset from the left to adjust cropping
+    cropLeftOffset = 290; % Specify the offset from the left to adjust cropping
     cropRightOffset = 400;% Specify the offset from the right to adjust cropping
 
 end
@@ -121,57 +121,13 @@ isTargetPresentInput = contains(recognizedTextInputUpper, targetText);
 
 % Determine if the currency is real or fake based on target text presence
 if isTargetPresentCropped
-    disp('Real Currency: "BANK NEGARA MALAYSIA" detected in cropped image.');
+    disp('Real Currency: "BANK NEGARA MALAYSIA" detected in original image.');
 else
-    disp('Fake Currency: "BANK NEGARA MALAYSIA" not detected in cropped image.');
+    disp('Fake Currency: "BANK NEGARA MALAYSIA" not detected in original image.');
 end
 
 if isTargetPresentInput
     disp('Real Currency: "BANK NEGARA MALAYSIA" detected in input image.');
 else
     disp('Fake Currency: "BANK NEGARA MALAYSIA" not detected in input image.');
-end
-
-
-
-%%
-% Convert recognized texts to lowercase
-recognizedTextCropped = lower(recognizedTextCropped);
-recognizedTextInput = lower(recognizedTextInput);
-
-% Create a dictionary of unique words
-words = unique([strsplit(recognizedTextCropped), strsplit(recognizedTextInput)]);
-
-% Convert recognized texts to word frequency vectors
-vectorCropped = createWordFrequencyVector(words, recognizedTextCropped);
-vectorInput = createWordFrequencyVector(words, recognizedTextInput);
-
-% Calculate cosine similarity
-cosineSimilarity = dot(vectorCropped, vectorInput) / (norm(vectorCropped) * norm(vectorInput));
-
-% Define a threshold for considering the input as fake
-cosineThreshold = 0.7; % Adjust as needed
-
-% Compare cosine similarity with the threshold
-if cosineSimilarity >= cosineThreshold
-    disp('Input Currency is Likely Real');
-else
-    disp('Input Currency is Likely Fake');
-end
-
-function vector = createWordFrequencyVector(words, text)
-    wordCounts = zeros(1, numel(words));
-    
-    % Tokenize the text
-    tokens = strsplit(text);
-    
-    % Count word occurrences
-    for i = 1:numel(tokens)
-        wordIndex = find(strcmpi(words, tokens{i}));
-        if ~isempty(wordIndex)
-            wordCounts(wordIndex) = wordCounts(wordIndex) + 1;
-        end
-    end
-    
-    vector = wordCounts / sum(wordCounts); % Normalize to get word frequencies
 end
