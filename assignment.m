@@ -301,9 +301,99 @@ function fakeCurrencyDetectionGui()
     end
 
     function result = checkFeature2(imagePath, method)
-        selectedMethod = getSelectedMethod();
-        fprintf('Selected Method: %s\n', selectedMethod);
+        % Load the input image
+        ImageInput = imread(imagePath);
+    
+        % Define the dimensions of the cropped region
+        cropWidth = size(ImageInput, 2) / 2;  % Keep half of the width
+        cropHeight = size(ImageInput, 1) / 4;  % Keep the top quarter of the height
+    
+        % Calculate the top left corner coordinates for cropping
+        cropTopLeftX = floor((size(ImageInput, 2) - cropWidth) / 2) + 1;
+        cropTopLeftY = 1;
+    
+        % Calculate the bottom right corner coordinates for cropping
+        cropBottomRightX = cropTopLeftX + cropWidth - 1;
+        cropBottomRightY = cropTopLeftY + cropHeight - 1;
+    
+        % Perform cropping
+        croppedTopMiddleImage = ImageInput(cropTopLeftY:cropBottomRightY, cropTopLeftX:cropBottomRightX, :);
+    
+        % Enhance the input image to improve OCR accuracy
+        enhancedImageInput = enhanceImage(croppedTopMiddleImage);
+    
+        % Use Tesseract to perform OCR on the enhanced image
+        ocrResultInput = ocr(enhancedImageInput, 'TextLayout', 'Block', 'CharacterSet', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+    
+        % Extract and display the recognized text
+        recognizedTextInput = ocrResultInput.Text;
+    
+        % Remove spaces and newline characters from recognized text
+        recognizedTextInputProcessed = strrep(recognizedTextInput, ' ', '');
+        recognizedTextInputProcessed = strrep(recognizedTextInputProcessed, newline, '');
+    
+        disp('Extracted Text from Input Image:');
+        disp(recognizedTextInputProcessed);
+    
+        % Convert recognized text to uppercase
+        recognizedTextInputUpper = upper(recognizedTextInputProcessed);
+    
+        % Define the target texts to check for
+        targetTexts = 'BANKNEGARAMALAYSIA';
+    
+        % Check if any of the target texts are present in the recognized text
+        isTargetPresentInput = any(contains(recognizedTextInputUpper, targetTexts));
+    
+        % Determine if the currency is real or fake based on target text presence
+        if isTargetPresentInput
+            disp('Real Currency: Target text detected in input image.');
+            result = true;
+        else
+            disp('Fake Currency: Target text not detected in input image.');
+            result = false;
+        end
+        
         result = true;
+    end
+
+    
+    function result = checkFeature3(imagePath, method)
+        checkImageNum = '';
+        if method == '1'
+            checkImageNum = '10';
+        elseif method == '2'
+            checkImageNum = '20';
+        elseif method == '3'
+            checkImageNum = '50';
+        elseif method == '4'
+            checkImageNum = '100';
+        end
+        checkImagePath = ['D:\GitHub\Image_Processing_and_Computer_Vision_Assignment\Currency\Real\' checkImageNum '.png'];
+        
+        % import image
+        importedImage = imread(imagePath);
+        checkImage = imread(checkImagePath);
+
+        % resize image
+        importedImage = imresize(importedImage, [344, 789]);
+        checkImage = imresize(checkImage, [344, 789]);
+        
+        % crop image
+        croppedImportedImage = cropImage(importedImage, 1, 30, 100, 200);
+        croppedCheckImage = cropImage(checkImage, 1, 30, 100, 200);
+
+        % deblur image
+        croppedImportedImage = imgaussfilt(croppedImportedImage, 1); 
+        croppedCheckImage = imgaussfilt(croppedCheckImage, 1);
+        
+        % compare similarity
+        cosineSimilarity = compareHOGFeatures(croppedImportedImage, croppedCheckImage);
+
+        if cosineSimilarity > 0.6
+            result = true;            
+        else
+            result = false;
+        end
     end
     
     function result = checkFeature3(imagePath, method)
