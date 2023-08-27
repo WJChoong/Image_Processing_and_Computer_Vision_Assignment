@@ -1,7 +1,7 @@
 clc
 
 % Input Image
-imagePathInput ='C:\Users\Felicia\OneDrive\Desktop\Currency\100\F4.png';
+imagePathInput ='C:\Users\Felicia\OneDrive\Desktop\Currency\10\R4.png';
 croppedImageInput = imread(imagePathInput);
 
 % Define the dimensions of the cropped region
