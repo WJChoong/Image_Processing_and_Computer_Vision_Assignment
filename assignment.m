@@ -501,3 +501,11 @@ function sharpenedImage = enhanceFeaturesAndEdges(inputImage)
     enhancedImage = imadjust(sharpenedImage, contrast_range, [0 1]);
     sharpenedImage = enhancedImage;
 end
+
+function enhancedImage = enhanceImage(inputImage)
+    % Denoise the image using Gaussian filter
+    denoisedImage = imgaussfilt(inputImage, 0.3);
+    
+    % Assign the enhanced image
+    enhancedImage = denoisedImage;
+end
