@@ -1,15 +1,13 @@
-clc
-
 % Input Image
-imagePathInput ='C:\Users\Felicia\OneDrive\Desktop\Currency\10\R4.png';
-croppedImageInput = imread(imagePathInput);
+imagePathInput ='C:\Users\Felicia\OneDrive\Desktop\Currency\Real\10.png';
+ImageInput = imread(imagePathInput);
 
 % Define the dimensions of the cropped region
-cropWidth = size(croppedImageInput, 2) / 2;  % Keep half of the width
-cropHeight = size(croppedImageInput, 1) / 4;  % Keep the top quarter of the height
+cropWidth = size(ImageInput, 2) / 2;  % Keep half of the width
+cropHeight = size(ImageInput, 1) / 4;  % Keep the top quarter of the height
 
 % Calculate the top left corner coordinates for cropping
-cropTopLeftX = floor((size(croppedImageInput, 2) - cropWidth) / 2) + 1;
+cropTopLeftX = floor((size(ImageInput, 2) - cropWidth) / 2) + 1;
 cropTopLeftY = 1;
 
 % Calculate the bottom right corner coordinates for cropping
@@ -17,7 +15,7 @@ cropBottomRightX = cropTopLeftX + cropWidth - 1;
 cropBottomRightY = cropTopLeftY + cropHeight - 1;
 
 % Perform cropping
-croppedTopMiddleImage = croppedImageInput(cropTopLeftY:cropBottomRightY, cropTopLeftX:cropBottomRightX, :);
+croppedTopMiddleImage = ImageInput(cropTopLeftY:cropBottomRightY, cropTopLeftX:cropBottomRightX, :);
 
 % Enhance the input image to improve OCR accuracy
 enhancedImageInput = enhanceImage(croppedTopMiddleImage);
