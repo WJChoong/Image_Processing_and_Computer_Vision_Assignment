@@ -70,8 +70,7 @@ function fakeCurrencyDetectionGui()
         end
     
         if ~checkFeature1(imagePath, method) || ~checkFeature2(imagePath, method) || ...
-           ~checkFeature3(imagePath, method) || ~checkFeature4(imagePath, method) || ...
-           ~checkFeature5(imagePath, method) || ~checkFeature6(imagePath, method)
+           ~checkFeature3(imagePath, method) || ~checkFeature4(imagePath, method)
             result = false; 
         end
     end
@@ -393,45 +392,6 @@ function fakeCurrencyDetectionGui()
             result = false;
         end
     end
-    
-    function result = checkFeature3(imagePath, method)
-        checkImageNum = '';
-        if method == '1'
-            checkImageNum = '10';
-        elseif method == '2'
-            checkImageNum = '20';
-        elseif method == '3'
-            checkImageNum = '50';
-        elseif method == '4'
-            checkImageNum = '100';
-        end
-        checkImagePath = ['D:\GitHub\Image_Processing_and_Computer_Vision_Assignment\Currency\Real\' checkImageNum '.png'];
-        
-        % import image
-        importedImage = imread(imagePath);
-        checkImage = imread(checkImagePath);
-
-        % resize image
-        importedImage = imresize(importedImage, [344, 789]);
-        checkImage = imresize(checkImage, [344, 789]);
-        
-        % crop image
-        croppedImportedImage = cropImage(importedImage, 1, 30, 100, 200);
-        croppedCheckImage = cropImage(checkImage, 1, 30, 100, 200);
-
-        % deblur image
-        croppedImportedImage = imgaussfilt(croppedImportedImage, 1); 
-        croppedCheckImage = imgaussfilt(croppedCheckImage, 1);
-        
-        % compare similarity
-        cosineSimilarity = compareHOGFeatures(croppedImportedImage, croppedCheckImage);
-
-        if cosineSimilarity > 0.6
-            result = true;            
-        else
-            result = false;
-        end
-    end
 
     function result = checkFeature4(imagePath, method)
         checkImageNum = '';
@@ -478,18 +438,6 @@ function fakeCurrencyDetectionGui()
         else
             result = false;
         end
-    end
-
-    function result = checkFeature5(imagePath, method)
-        selectedMethod = getSelectedMethod();
-        fprintf('Selected Method: %s\n', selectedMethod);
-        result = true;
-    end
-
-    function result = checkFeature6(imagePath, method)
-        selectedMethod = getSelectedMethod();
-        fprintf('Selected Method: %s\n', selectedMethod);
-        result = true;
     end
 
 end
