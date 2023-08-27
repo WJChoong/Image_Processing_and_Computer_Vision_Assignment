@@ -354,7 +354,6 @@ function fakeCurrencyDetectionGui()
     
         % Determine if the currency is real or fake based on target text presence
         if isTargetPresentInput
-            disp("Helo");
             set(result2, 'String', 'Feature 2: Pass');
             result = true;
         else
