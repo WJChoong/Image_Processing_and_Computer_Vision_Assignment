@@ -14,6 +14,11 @@ function fakeCurrencyDetectionGui()
     radioMethod3 = uicontrol('Style', 'radio', 'String', '50', 'Position', [250, 160, 100, 20], 'Tag', 'method3');
     radioMethod4 = uicontrol('Style', 'radio', 'String', '100', 'Position', [350, 160, 100, 20], 'Tag', 'method4');
 
+    result1 = uicontrol('Style', 'text', 'Position', [50, 60, 300, 30], 'HorizontalAlignment', 'center');
+    result2 = uicontrol('Style', 'text', 'Position', [50, 40, 300, 30], 'HorizontalAlignment', 'center');
+    result3 = uicontrol('Style', 'text', 'Position', [50, 20, 300, 30], 'HorizontalAlignment', 'center');
+    result4 = uicontrol('Style', 'text', 'Position', [50, 0, 300, 30], 'HorizontalAlignment', 'center');
+
     % Initialize variables
     selectedImagePath = '';
 
@@ -23,13 +28,13 @@ function fakeCurrencyDetectionGui()
         if fileName ~= 0
             selectedImagePath = fullfile(filePath, fileName);
             set(pathText, 'String', selectedImagePath);
-            set(resultText, 'String', ''); % Clear previous result message
+            set(resultText, 'String', '');
         end
     end
 
     % Callback function for the Run button
     function runButtonCallback(~, ~)
-        if isempty(selectedImagePath)
+        if numel(selectedImagePath) == 0
             msgbox('Please select an image first.', 'Error', 'error');
         else
             % 
@@ -40,7 +45,7 @@ function fakeCurrencyDetectionGui()
             if result
                 msgbox('The image is detected as real currency!', 'Success');
             else
-                msgbox('Please select an image first.', 'Error', 'error');
+                msgbox('The image is detected as fake currency!', 'Error', 'error');
             end
 
             %set(resultText, 'String', resultMessage);
@@ -69,9 +74,10 @@ function fakeCurrencyDetectionGui()
             msgbox('Please select a currency first.', 'Error', 'error');
         end
     
+        checkFeature1(imagePath, method)
+        
         if ~checkFeature1(imagePath, method) || ~checkFeature2(imagePath, method) || ...
-           ~checkFeature3(imagePath, method) || ~checkFeature4(imagePath, method) || ...
-           ~checkFeature5(imagePath, method) || ~checkFeature6(imagePath, method)
+           ~checkFeature3(imagePath, method) || ~checkFeature4(imagePath, method)
             result = false; 
         end
     end
@@ -88,228 +94,272 @@ function fakeCurrencyDetectionGui()
         elseif method == '4'
             checkImageNum = '100';
         end
-        checkImagePath = ['D:\GitHub\Image_Processing_and_Computer_Vision_Assignment\Currency\Real\' checkImageNum '.png'];
+        checkImagePath = ['Currency\Real\' checkImageNum '.png'];
 
-        realcurrency = imread(imagePath);
-
-
-fakecurrency = imread(imagePath);
-
-
-option = "50"; 
-
-if option == "10"
-
-    % Resize both image to 300,600
-    Size = [300,600]; % Adjust the size as needed
-    resizedImage1 = imresize(realcurrency, Size);
-    resizedImage2 = imresize(fakecurrency, Size);
-    
-    % Crop Image
-    % Define the dimensions of the region to crop
-    cropWidth = 200;  % Adjust the width of the cropped region
-    cropHeight = 35; % Adjust the height of the cropped region
-    
-    % Determine the starting row and column for cropping
-    startRow = 260;
-    startCol = 395;
-    
-    % Crop the image
-    croppedImage1 = resizedImage1(startRow:startRow + cropHeight - 1, startCol:startCol + cropWidth - 1, :);
-    croppedImage2 = resizedImage2(startRow:startRow + cropHeight - 1, startCol:startCol + cropWidth - 1, :);
-     
-    % Convert to grayscale image 
-    Igray1 = rgb2gray(croppedImage1); 
-    
-    % Convert to binary image 
-    Ibw1 = im2bw(Igray1,graythresh(Igray1)); 
-    
-    % Apply Gaussian Filter
-    sigma = 1; % Adjust sigma as needed
-    kernelSize = 5; % Adjust kernel size as needed
-    gaussianKernel = fspecial('gaussian', [kernelSize kernelSize], sigma);
-    filteredImage1 = imfilter(Ibw1, gaussianKernel, 'same');
-    
-    % Convert to grayscale image 
-    Igray2 = rgb2gray(croppedImage2); 
-    
-    % Convert to binary image 
-    Ibw2 = im2bw(Igray2,graythresh(Igray2)); 
-    
-    % Apply Gaussian Filter
-    sigma = 1; % Adjust sigma as needed
-    kernelSize = 5; % Adjust kernel size as needed
-    gaussianKernel = fspecial('gaussian', [kernelSize kernelSize], sigma);
-    filteredImage2 = imfilter(Ibw2, gaussianKernel, 'same');
-
-elseif option == "20"
-
-    % Resize both image to 300,600
-    Size = [300,600]; % Adjust the size as needed
-    resizedImage1 = imresize(realcurrency, Size);
-    resizedImage2 = imresize(fakecurrency, Size);
-    
-    % Crop Image
-    % Define the dimensions of the region to crop
-    cropWidth = 185;  % Adjust the width of the cropped region
-    cropHeight = 35; % Adjust the height of the cropped region
-    
-    % Determine the starting row and column for cropping
-    startRow = 260;
-    startCol = 395;
-    
-    % Crop the image
-    croppedImage1 = resizedImage1(startRow:startRow + cropHeight - 1, startCol:startCol + cropWidth - 1, :);
-    croppedImage2 = resizedImage2(startRow:startRow + cropHeight - 1, startCol:startCol + cropWidth - 1, :);
-
-    % Convert to grayscale image 
-    Igray1 = rgb2gray(croppedImage1); 
-    
-    % Convert to binary image 
-    Ibw1 = im2bw(Igray1,graythresh(Igray1)); 
-    
-    % Apply Gaussian Filter
-    sigma = 1; % Adjust sigma as needed
-    kernelSize = 4; % Adjust kernel size as needed
-    gaussianKernel = fspecial('gaussian', [kernelSize kernelSize], sigma);
-    filteredImage1 = imfilter(Ibw1, gaussianKernel, 'same');
+        realcurrency = imread(checkImagePath);
+        fakecurrency = imread(imagePath);
+          
+        if checkImageNum == "10"
         
-    % Convert to grayscale image 
-    Igray2 = rgb2gray(croppedImage2); 
-    
-    % Convert to binary image 
-    Ibw2 = im2bw(Igray2,graythresh(Igray2)); 
-    
-    % Apply Gaussian Filter
-    sigma = 1; % Adjust sigma as needed
-    kernelSize = 4; % Adjust kernel size as needed
-    gaussianKernel = fspecial('gaussian', [kernelSize kernelSize], sigma);
-    filteredImage2 = imfilter(Ibw2, gaussianKernel, 'same');
-
-elseif option == "100"
-
-    % Resize both image to 300,600
-    Size = [300,600]; % Adjust the size as needed
-    resizedImage1 = imresize(realcurrency, Size);
-    resizedImage2 = imresize(fakecurrency, Size);
-    
-    % Crop Image
-    % Define the dimensions of the region to crop
-    cropWidth = 163;  % Adjust the width of the cropped region
-    cropHeight = 15; % Adjust the height of the cropped region
-    
-    % Determine the starting row and column for cropping
-    startRow = 272;
-    startCol = 405;
-    
-    % Crop the image
-    croppedImage1 = resizedImage1(startRow:startRow + cropHeight - 1, startCol:startCol + cropWidth - 1, :);
-    croppedImage2 = resizedImage2(startRow:startRow + cropHeight - 1, startCol:startCol + cropWidth - 1, :);
-     
-    % Convert to grayscale image 
-    Igray1 = rgb2gray(croppedImage1); 
-    
-    % Convert to binary image 
-    Ibw1 = im2bw(Igray1,graythresh(Igray1)); 
-
-    % Resize binary image
-    Ibw1 = imresize(Ibw1, 4);
-
-    % Apply Gaussian Filter
-    sigma = 11; % Adjust sigma as needed
-    kernelSize = 5; % Adjust kernel size as needed
-    gaussianKernel = fspecial('gaussian', [kernelSize kernelSize], sigma);
-    filteredImage1 = imfilter(Ibw1, gaussianKernel, 'same');
-   
-    % Convert to grayscale image 
-    Igray2 = rgb2gray(croppedImage2); 
-    
-    % Convert to binary image 
-    Ibw2 = im2bw(Igray2,graythresh(Igray2)); 
-    
-    % Resize binary image
-    Ibw2 = imresize(Ibw2, 4);
- 
-    % Apply Gaussian Filter
-    sigma = 11; % Adjust sigma as needed
-    kernelSize = 5; % Adjust kernel size as needed
-    gaussianKernel = fspecial('gaussian', [kernelSize kernelSize], sigma);
-    filteredImage2 = imfilter(Ibw2, gaussianKernel, 'same');
-
-elseif option == "50"
-
-    % Resize both image to 300,600
-    Size = [300,600]; % Adjust the size as needed
-    resizedImage1 = imresize(realcurrency, Size);
-    resizedImage2 = imresize(fakecurrency, Size);
-    
-    % Crop Image
-    % Define the dimensions of the region to crop
-    cropWidth = 145;  % Adjust the width of the cropped region
-    cropHeight = 25; % Adjust the height of the cropped region
-    
-    % Determine the starting row and column for cropping
-    startRow = 262;
-    startCol = 377;
-    
-    % Crop the image
-    croppedImage1 = resizedImage1(startRow:startRow + cropHeight - 1, startCol:startCol + cropWidth - 1, :);
-    croppedImage2 = resizedImage2(startRow:startRow + cropHeight - 1, startCol:startCol + cropWidth - 1, :);
-    
-    % Convert to grayscale image 
-    Igray1 = rgb2gray(croppedImage1); 
-    
-    % Convert to binary image 
-    Ibw1 = im2bw(Igray1,graythresh(Igray1)); 
-
-    % Resize binary image
-    Ibw1 = imresize(Ibw1, 4);
-
-    % Apply Gaussian Filter
-    sigma = 11; % Adjust sigma as needed
-    kernelSize = 4; % Adjust kernel size as needed
-    gaussianKernel = fspecial('gaussian', [kernelSize kernelSize], sigma);
-    filteredImage1 = imfilter(Ibw1, gaussianKernel, 'same'); 
-   
-    % Convert to grayscale image 
-    Igray2 = rgb2gray(croppedImage2);  
-    
-    % Convert to binary image 
-    Ibw2 = im2bw(Igray2,graythresh(Igray2)); 
-    
-    % Resize binary image
-    Ibw2 = imresize(Ibw2, 4);
- 
-    % Apply Gaussian Filter
-    sigma = 11; % Adjust sigma as needed
-    kernelSize = 4; % Adjust kernel size as needed
-    gaussianKernel = fspecial('gaussian', [kernelSize kernelSize], sigma);
-    filteredImage2 = imfilter(Ibw2, gaussianKernel, 'same');
-
-end
-
-% Use OCR on the cropped images
-ocrResult1 = ocr(filteredImage1);
-ocrResult2 = ocr(filteredImage2);
-
-% Extract the recognized text and remove punctuation and spaces
-Text1 = ocrResult1.Text;
-cleanedText1 = regexprep(Text1, '[\s\p{P}"''.,-]', '');
-Text2 = ocrResult2.Text;
-cleanedText2 = regexprep(Text2, '[\s\p{P}"''.,-]', '');
-
-if strcmp(cleanedText1, cleanedText2)
-    result = true; 
-else
-    result = false; 
-end
+            % Resize both image to 300,600
+            Size = [300,600]; % Adjust the size as needed
+            resizedImage1 = imresize(realcurrency, Size);
+            resizedImage2 = imresize(fakecurrency, Size);
+            
+            % Crop Image
+            % Define the dimensions of the region to crop
+            cropWidth = 200;  % Adjust the width of the cropped region
+            cropHeight = 35; % Adjust the height of the cropped region
+            
+            % Determine the starting row and column for cropping
+            startRow = 260;
+            startCol = 395;
+            
+            % Crop the image
+            croppedImage1 = resizedImage1(startRow:startRow + cropHeight - 1, startCol:startCol + cropWidth - 1, :);
+            croppedImage2 = resizedImage2(startRow:startRow + cropHeight - 1, startCol:startCol + cropWidth - 1, :);
+             
+            % Convert to grayscale image 
+            Igray1 = rgb2gray(croppedImage1); 
+            
+            % Convert to binary image 
+            Ibw1 = im2bw(Igray1,graythresh(Igray1)); 
+            
+            % Apply Gaussian Filter
+            sigma = 1; % Adjust sigma as needed
+            kernelSize = 5; % Adjust kernel size as needed
+            gaussianKernel = fspecial('gaussian', [kernelSize kernelSize], sigma);
+            filteredImage1 = imfilter(Ibw1, gaussianKernel, 'same');
+            
+            % Convert to grayscale image 
+            Igray2 = rgb2gray(croppedImage2); 
+            
+            % Convert to binary image 
+            Ibw2 = im2bw(Igray2,graythresh(Igray2)); 
+            
+            % Apply Gaussian Filter
+            sigma = 1; % Adjust sigma as needed
+            kernelSize = 5; % Adjust kernel size as needed
+            gaussianKernel = fspecial('gaussian', [kernelSize kernelSize], sigma);
+            filteredImage2 = imfilter(Ibw2, gaussianKernel, 'same');
+        
+        elseif checkImageNum == "20"
+        
+            % Resize both image to 300,600
+            Size = [300,600]; % Adjust the size as needed
+            resizedImage1 = imresize(realcurrency, Size);
+            resizedImage2 = imresize(fakecurrency, Size);
+            
+            % Crop Image
+            % Define the dimensions of the region to crop
+            cropWidth = 185;  % Adjust the width of the cropped region
+            cropHeight = 35; % Adjust the height of the cropped region
+            
+            % Determine the starting row and column for cropping
+            startRow = 260;
+            startCol = 395;
+            
+            % Crop the image
+            croppedImage1 = resizedImage1(startRow:startRow + cropHeight - 1, startCol:startCol + cropWidth - 1, :);
+            croppedImage2 = resizedImage2(startRow:startRow + cropHeight - 1, startCol:startCol + cropWidth - 1, :);
+        
+            % Convert to grayscale image 
+            Igray1 = rgb2gray(croppedImage1); 
+            
+            % Convert to binary image 
+            Ibw1 = im2bw(Igray1,graythresh(Igray1)); 
+            
+            % Apply Gaussian Filter
+            sigma = 1; % Adjust sigma as needed
+            kernelSize = 4; % Adjust kernel size as needed
+            gaussianKernel = fspecial('gaussian', [kernelSize kernelSize], sigma);
+            filteredImage1 = imfilter(Ibw1, gaussianKernel, 'same');
+                
+            % Convert to grayscale image 
+            Igray2 = rgb2gray(croppedImage2); 
+            
+            % Convert to binary image 
+            Ibw2 = im2bw(Igray2,graythresh(Igray2)); 
+            
+            % Apply Gaussian Filter
+            sigma = 1; % Adjust sigma as needed
+            kernelSize = 4; % Adjust kernel size as needed
+            gaussianKernel = fspecial('gaussian', [kernelSize kernelSize], sigma);
+            filteredImage2 = imfilter(Ibw2, gaussianKernel, 'same');
+        
+        elseif checkImageNum == "100"
+        
+            % Resize both image to 300,600
+            Size = [300,600]; % Adjust the size as needed
+            resizedImage1 = imresize(realcurrency, Size);
+            resizedImage2 = imresize(fakecurrency, Size);
+            
+            % Crop Image
+            % Define the dimensions of the region to crop
+            cropWidth = 163;  % Adjust the width of the cropped region
+            cropHeight = 15; % Adjust the height of the cropped region
+            
+            % Determine the starting row and column for cropping
+            startRow = 272;
+            startCol = 405;
+            
+            % Crop the image
+            croppedImage1 = resizedImage1(startRow:startRow + cropHeight - 1, startCol:startCol + cropWidth - 1, :);
+            croppedImage2 = resizedImage2(startRow:startRow + cropHeight - 1, startCol:startCol + cropWidth - 1, :);
+             
+            % Convert to grayscale image 
+            Igray1 = rgb2gray(croppedImage1); 
+            
+            % Convert to binary image 
+            Ibw1 = im2bw(Igray1,graythresh(Igray1)); 
+        
+            % Resize binary image
+            Ibw1 = imresize(Ibw1, 4);
+        
+            % Apply Gaussian Filter
+            sigma = 11; % Adjust sigma as needed
+            kernelSize = 5; % Adjust kernel size as needed
+            gaussianKernel = fspecial('gaussian', [kernelSize kernelSize], sigma);
+            filteredImage1 = imfilter(Ibw1, gaussianKernel, 'same');
+           
+            % Convert to grayscale image 
+            Igray2 = rgb2gray(croppedImage2); 
+            
+            % Convert to binary image 
+            Ibw2 = im2bw(Igray2,graythresh(Igray2)); 
+            
+            % Resize binary image
+            Ibw2 = imresize(Ibw2, 4);
+         
+            % Apply Gaussian Filter
+            sigma = 11; % Adjust sigma as needed
+            kernelSize = 5; % Adjust kernel size as needed
+            gaussianKernel = fspecial('gaussian', [kernelSize kernelSize], sigma);
+            filteredImage2 = imfilter(Ibw2, gaussianKernel, 'same');
+        
+        elseif checkImageNum == "50"
+        
+            % Resize both image to 300,600
+            Size = [300,600]; % Adjust the size as needed
+            resizedImage1 = imresize(realcurrency, Size);
+            resizedImage2 = imresize(fakecurrency, Size);
+            
+            % Crop Image
+            % Define the dimensions of the region to crop
+            cropWidth = 145;  % Adjust the width of the cropped region
+            cropHeight = 25; % Adjust the height of the cropped region
+            
+            % Determine the starting row and column for cropping
+            startRow = 262;
+            startCol = 377;
+            
+            % Crop the image
+            croppedImage1 = resizedImage1(startRow:startRow + cropHeight - 1, startCol:startCol + cropWidth - 1, :);
+            croppedImage2 = resizedImage2(startRow:startRow + cropHeight - 1, startCol:startCol + cropWidth - 1, :);
+            
+            % Convert to grayscale image 
+            Igray1 = rgb2gray(croppedImage1); 
+            
+            % Convert to binary image 
+            Ibw1 = im2bw(Igray1,graythresh(Igray1)); 
+        
+            % Resize binary image
+            Ibw1 = imresize(Ibw1, 4);
+        
+            % Apply Gaussian Filter
+            sigma = 11; % Adjust sigma as needed
+            kernelSize = 4; % Adjust kernel size as needed
+            gaussianKernel = fspecial('gaussian', [kernelSize kernelSize], sigma);
+            filteredImage1 = imfilter(Ibw1, gaussianKernel, 'same'); 
+           
+            % Convert to grayscale image 
+            Igray2 = rgb2gray(croppedImage2);  
+            
+            % Convert to binary image 
+            Ibw2 = im2bw(Igray2,graythresh(Igray2)); 
+            
+            % Resize binary image
+            Ibw2 = imresize(Ibw2, 4);
+         
+            % Apply Gaussian Filter
+            sigma = 11; % Adjust sigma as needed
+            kernelSize = 4; % Adjust kernel size as needed
+            gaussianKernel = fspecial('gaussian', [kernelSize kernelSize], sigma);
+            filteredImage2 = imfilter(Ibw2, gaussianKernel, 'same');
+        
+        end
+        
+        % Use OCR on the cropped images
+        ocrResult1 = ocr(filteredImage1);
+        ocrResult2 = ocr(filteredImage2);
+        
+        % Extract the recognized text and remove punctuation and spaces
+        Text1 = ocrResult1.Text;
+        cleanedText1 = regexprep(Text1, '[\s\p{P}"''.,-]', '');
+        Text2 = ocrResult2.Text;
+        cleanedText2 = regexprep(Text2, '[\s\p{P}"''.,-]', '');
+        
+        if strcmp(cleanedText1, cleanedText2)
+            set(result1, 'String', 'Feature 1: Pass');
+            result = true; 
+        else
+            set(result1, 'String', 'Feature 1: Fail');
+            result = false; 
+        end
     end
 
     function result = checkFeature2(imagePath, method)
-        selectedMethod = getSelectedMethod();
-        fprintf('Selected Method: %s\n', selectedMethod);
-        result = true;
+        % Load the input image
+        ImageInput = imread(imagePath);
+    
+        % Define the dimensions of the cropped region
+        cropWidth = size(ImageInput, 2) / 2;  % Keep half of the width
+        cropHeight = size(ImageInput, 1) / 4;  % Keep the top quarter of the height
+    
+        % Calculate the top left corner coordinates for cropping
+        cropTopLeftX = floor((size(ImageInput, 2) - cropWidth) / 2) + 1;
+        cropTopLeftY = 1;
+    
+        % Calculate the bottom right corner coordinates for cropping
+        cropBottomRightX = cropTopLeftX + cropWidth - 1;
+        cropBottomRightY = cropTopLeftY + cropHeight - 1;
+    
+        % Perform cropping
+        croppedTopMiddleImage = ImageInput(cropTopLeftY:cropBottomRightY, cropTopLeftX:cropBottomRightX, :);
+    
+        % Enhance the input image to improve OCR accuracy
+        enhancedImageInput = enhanceImage(croppedTopMiddleImage);
+    
+        % Use Tesseract to perform OCR on the enhanced image
+        ocrResultInput = ocr(enhancedImageInput, 'TextLayout', 'Block', 'CharacterSet', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+    
+        % Extract and display the recognized text
+        recognizedTextInput = ocrResultInput.Text;
+    
+        % Remove spaces and newline characters from recognized text
+        recognizedTextInputProcessed = strrep(recognizedTextInput, ' ', '');
+        recognizedTextInputProcessed = strrep(recognizedTextInputProcessed, newline, '');
+     
+        % Convert recognized text to uppercase
+        recognizedTextInputUpper = upper(recognizedTextInputProcessed);
+    
+        % Define the target texts to check for
+        targetTexts = 'BANKNEGARAMALAYSIA';
+    
+        % Check if any of the target texts are present in the recognized text
+        isTargetPresentInput = any(contains(recognizedTextInputUpper, targetTexts));
+    
+        % Determine if the currency is real or fake based on target text presence
+        if isTargetPresentInput
+            disp("Helo");
+            set(result2, 'String', 'Feature 2: Pass');
+            result = true;
+        else
+            set(result2, 'String', 'Feature 2: Fail');
+            result = false;
+        end
     end
+
     
     function result = checkFeature3(imagePath, method)
         checkImageNum = '';
@@ -322,7 +372,7 @@ end
         elseif method == '4'
             checkImageNum = '100';
         end
-        checkImagePath = ['D:\GitHub\Image_Processing_and_Computer_Vision_Assignment\Currency\Real\' checkImageNum '.png'];
+        checkImagePath = ['Currency\Real\' checkImageNum '.png'];
         
         % import image
         importedImage = imread(imagePath);
@@ -344,8 +394,10 @@ end
         cosineSimilarity = compareHOGFeatures(croppedImportedImage, croppedCheckImage);
 
         if cosineSimilarity > 0.6
+            set(result3, 'String', 'Feature 3: Pass');
             result = true;            
         else
+            set(result3, 'String', 'Feature 3: Fail');
             result = false;
         end
     end
@@ -361,7 +413,7 @@ end
         elseif method == '4'
             checkImageNum = '100';
         end
-        checkImagePath = ['D:\GitHub\Image_Processing_and_Computer_Vision_Assignment\Currency\Real\' checkImageNum '.png'];
+        checkImagePath = ['Currency\Real\' checkImageNum '.png'];
         
         importedImage = imread(imagePath);
         checkImage = imread(checkImagePath);
@@ -391,22 +443,12 @@ end
         
         % Display the similarity result
         if similarity > 0.45
+            set(result4, 'String', 'Feature 4: Pass');
             result = true;
         else
+            set(result4, 'String', 'Feature 4: Fail');
             result = false;
         end
-    end
-
-    function result = checkFeature5(imagePath, method)
-        selectedMethod = getSelectedMethod();
-        fprintf('Selected Method: %s\n', selectedMethod);
-        result = true;
-    end
-
-    function result = checkFeature6(imagePath, method)
-        selectedMethod = getSelectedMethod();
-        fprintf('Selected Method: %s\n', selectedMethod);
-        result = true;
     end
 
 end
@@ -469,4 +511,12 @@ function sharpenedImage = enhanceFeaturesAndEdges(inputImage)
     contrast_range = [0.1 0.9];
     enhancedImage = imadjust(sharpenedImage, contrast_range, [0 1]);
     sharpenedImage = enhancedImage;
+end
+
+function enhancedImage = enhanceImage(inputImage)
+    % Denoise the image using Gaussian filter
+    denoisedImage = imgaussfilt(inputImage, 0.3);
+    
+    % Assign the enhanced image
+    enhancedImage = denoisedImage;
 end

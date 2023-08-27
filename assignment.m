@@ -14,6 +14,11 @@ function fakeCurrencyDetectionGui()
     radioMethod3 = uicontrol('Style', 'radio', 'String', '50', 'Position', [250, 160, 100, 20], 'Tag', 'method3');
     radioMethod4 = uicontrol('Style', 'radio', 'String', '100', 'Position', [350, 160, 100, 20], 'Tag', 'method4');
 
+    result1 = uicontrol('Style', 'text', 'Position', [50, 100, 300, 30], 'HorizontalAlignment', 'center');
+    result2 = uicontrol('Style', 'text', 'Position', [50, 80, 300, 30], 'HorizontalAlignment', 'center');
+    result3 = uicontrol('Style', 'text', 'Position', [50, 60, 300, 30], 'HorizontalAlignment', 'center');
+    result4 = uicontrol('Style', 'text', 'Position', [50, 40, 300, 30], 'HorizontalAlignment', 'center');
+
     % Initialize variables
     selectedImagePath = '';
 
@@ -69,8 +74,13 @@ function fakeCurrencyDetectionGui()
             msgbox('Please select a currency first.', 'Error', 'error');
         end
     
-        if ~checkFeature1(imagePath, method) || ~checkFeature2(imagePath, method) || ...
-           ~checkFeature3(imagePath, method) || ~checkFeature4(imagePath, method)
+        f1 = checkFeature1(imagePath, method);
+        f2 = checkFeature2(imagePath, method);
+        f3 = checkFeature3(imagePath, method);
+        f4 = checkFeature4(imagePath, method);
+
+        if ~f1 || ~f2 || ...
+           ~f3 || ~f4
             result = false; 
         end
     end
@@ -87,7 +97,7 @@ function fakeCurrencyDetectionGui()
         elseif method == '4'
             checkImageNum = '100';
         end
-        checkImagePath = ['D:\GitHub\Image_Processing_and_Computer_Vision_Assignment\Currency\Real\' checkImageNum '.png'];
+        checkImagePath = ['Currency\Real\' checkImageNum '.png'];
 
         realcurrency = imread(checkImagePath);
         fakecurrency = imread(imagePath);
@@ -293,8 +303,10 @@ function fakeCurrencyDetectionGui()
         cleanedText2 = regexprep(Text2, '[\s\p{P}"''.,-]', '');
         
         if strcmp(cleanedText1, cleanedText2)
+            set(result1, 'String', 'Feature 1: Pass');
             result = true; 
         else
+            set(result1, 'String', 'Feature 1: Fail');
             result = false; 
         end
     end
@@ -330,10 +342,7 @@ function fakeCurrencyDetectionGui()
         % Remove spaces and newline characters from recognized text
         recognizedTextInputProcessed = strrep(recognizedTextInput, ' ', '');
         recognizedTextInputProcessed = strrep(recognizedTextInputProcessed, newline, '');
-    
-        disp('Extracted Text from Input Image:');
-        disp(recognizedTextInputProcessed);
-    
+     
         % Convert recognized text to uppercase
         recognizedTextInputUpper = upper(recognizedTextInputProcessed);
     
@@ -345,10 +354,11 @@ function fakeCurrencyDetectionGui()
     
         % Determine if the currency is real or fake based on target text presence
         if isTargetPresentInput
-            disp('Real Currency: Target text detected in input image.');
+            disp("Helo");
+            set(result2, 'String', 'Feature 2: Pass');
             result = true;
         else
-            disp('Fake Currency: Target text not detected in input image.');
+            set(result2, 'String', 'Feature 2: Fail');
             result = false;
         end
     end
@@ -365,7 +375,7 @@ function fakeCurrencyDetectionGui()
         elseif method == '4'
             checkImageNum = '100';
         end
-        checkImagePath = ['D:\GitHub\Image_Processing_and_Computer_Vision_Assignment\Currency\Real\' checkImageNum '.png'];
+        checkImagePath = ['Currency\Real\' checkImageNum '.png'];
         
         % import image
         importedImage = imread(imagePath);
@@ -387,8 +397,10 @@ function fakeCurrencyDetectionGui()
         cosineSimilarity = compareHOGFeatures(croppedImportedImage, croppedCheckImage);
 
         if cosineSimilarity > 0.6
+            set(result3, 'String', 'Feature 3: Pass');
             result = true;            
         else
+            set(result3, 'String', 'Feature 3: Fail');
             result = false;
         end
     end
@@ -404,7 +416,7 @@ function fakeCurrencyDetectionGui()
         elseif method == '4'
             checkImageNum = '100';
         end
-        checkImagePath = ['D:\GitHub\Image_Processing_and_Computer_Vision_Assignment\Currency\Real\' checkImageNum '.png'];
+        checkImagePath = ['Currency\Real\' checkImageNum '.png'];
         
         importedImage = imread(imagePath);
         checkImage = imread(checkImagePath);
@@ -434,8 +446,10 @@ function fakeCurrencyDetectionGui()
         
         % Display the similarity result
         if similarity > 0.45
+            set(result4, 'String', 'Feature 4: Pass');
             result = true;
         else
+            set(result4, 'String', 'Feature 4: Fail');
             result = false;
         end
     end
