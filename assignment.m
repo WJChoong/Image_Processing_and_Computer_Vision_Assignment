@@ -32,17 +32,18 @@ function fakeCurrencyDetectionGui()
         if isempty(selectedImagePath)
             msgbox('Please select an image first.', 'Error', 'error');
         else
+            % 
             method = getSelectedMethod(); % Get the selected method
             % Perform fake currency detection using the 6 functions
-            result = performFakeCurrencyDetection(selectedImagePath, method);
+            result = performFakeCurrencyDetection(selectedImagePath, method);        
             
             if result
-                resultMessage = 'The image is not detected as fake currency.';
+                msgbox('The image is detected as real currency!', 'Success');
             else
-                resultMessage = 'The image is detected as fake currency.';
+                msgbox('Please select an image first.', 'Error', 'error');
             end
 
-            set(resultText, 'String', resultMessage);
+            %set(resultText, 'String', resultMessage);
         end
     end
 
@@ -101,23 +102,29 @@ function fakeCurrencyDetectionGui()
         end
         checkImagePath = ['D:\GitHub\Image_Processing_and_Computer_Vision_Assignment\Currency\Real\' checkImageNum '.png'];
         
+        % import image
         importedImage = imread(imagePath);
         checkImage = imread(checkImagePath);
 
-        importedImage = imresize(importedImage, [344, 789]); % Resize to a common size
-        checkImage = imresize(checkImage, [344, 789]); % Resize to a common size
+        % resize image
+        importedImage = imresize(importedImage, [344, 789]);
+        checkImage = imresize(checkImage, [344, 789]);
         
-        croppedImportedImage = cropImage(importedImage, 1, 20, 100, 200);
-        croppedCheckImage = cropImage(checkImage, 1, 20, 100, 200);
+        % crop image
+        croppedImportedImage = cropImage(importedImage, 1, 30, 100, 200);
+        croppedCheckImage = cropImage(checkImage, 1, 30, 100, 200);
 
-        croppedImportedImage = imgaussfilt(croppedImportedImage, 1); % Adjust the standard deviation (second argument) as needed
-        croppedCheckImage = imgaussfilt(croppedCheckImage, 1); % Adjust the standard deviation (second argument) as needed
+        % deblur image
+        croppedImportedImage = imgaussfilt(croppedImportedImage, 1); 
+        croppedCheckImage = imgaussfilt(croppedCheckImage, 1);
         
+        % compare similarity
         cosineSimilarity = compareHOGFeatures(croppedImportedImage, croppedCheckImage);
 
-        result = false;
-        if cosineSimilarity > 0.7
+        if cosineSimilarity > 0.6
             result = true;            
+        else
+            result = false;
         end
     end
 
@@ -137,29 +144,33 @@ function fakeCurrencyDetectionGui()
         importedImage = imread(imagePath);
         checkImage = imread(checkImagePath);
 
+        % resize the image
         imageA = imresize(importedImage, [344, 789]); % Resize to a common size
         imageB = imresize(checkImage, [344, 789]); % Resize to a common size
 
-        % Apply Gaussian smoothing
-        sigma = 0.4; % Adjust the sigma value for desired smoothing strength
-        imageA = imgaussfilt(imageA, sigma);
+        % crop the image
+        croppedImageA = cropImage(imageA, 270, 35, 344, 100);
+        croppedImageB = cropImage(imageB, 270, 35, 344, 100);
+
+        % enhance the feature and edges
+        enhancedImageA = enhanceFeaturesAndEdges(croppedImageA);
+        enhancedImageB = enhanceFeaturesAndEdges(croppedImageB);
+
+        % apply smoothing
+        smoothenImageA = imgaussfilt(enhancedImageA, 1);
+        smoothenImageB = imgaussfilt(enhancedImageB, 1);    
         
-        croppedImageA = cropImage(imageA, 250, 30, 344, 100);
-        croppedImageB = cropImage(imageB, 250, 30, 344, 100);
         % Extract features from both images
-        featuresA = extractFeatures(croppedImageA);
-        featuresB = extractFeatures(croppedImageB);
+        featuresA = extractFeatures(smoothenImageA);
+        featuresB = extractFeatures(smoothenImageB);
         
         % Compare the extracted features
         similarity = compareFeatures(featuresA, featuresB);
         
         % Display the similarity result
-        threshold = 0.5; % Set a threshold for similarity
-        if similarity < threshold
-            disp('Diagram A and Diagram B have similar features.');
+        if similarity > 0.45
             result = true;
         else
-            disp('Diagram A and Diagram B do not have similar features.');
             result = false;
         end
     end
@@ -203,36 +214,37 @@ function cosineSim = compareHOGFeatures(image1, image2)
     cosineSimilarity = dot(hogFeatures1, hogFeatures2) / (norm(hogFeatures1) * norm(hogFeatures2));
 
     % Display the cosine similarity
-    disp(['Cosine Similarity: ', num2str(cosineSimilarity)]);
     cosineSim = cosineSimilarity;
 end
 
 function features = extractFeatures(image)
-    % Apply necessary image processing techniques to extract features from Diagram A
-    % Example: Convert to grayscale, perform spatial filtering, enhance contrast, and detect edges
     gray = rgb2gray(image);
     filtered = imfilter(gray, fspecial('gaussian', [5 5], 2));
     enhanced = imadjust(filtered, [0.3 0.7], [0 1]);
     edges = edge(enhanced, 'Canny');
     
-    features = edges; % Using edges as features for demonstration
+    features = edges;
 end
 
-function similarity = compareFeatures(featuresA, featuresB)
-    % Compare the extracted features of Diagram A and Diagram B
-    % Example: Compute the normalized correlation coefficient as similarity measure
-    %correlation = corr2(featuresA, featuresB);
-    %similarity = correlation;
-
-    % Compare the extracted features of Diagram A and Diagram B
-    
+function similarity = compareFeatures(featuresA, featuresB)    
     % Count the number of matching edge pixels
     matchingPixels = sum(featuresA & featuresB);
     
     % Normalize the count by the total number of edge pixels
     totalEdgePixels = sum(featuresA | featuresB);
     similarityRatio = matchingPixels / totalEdgePixels;
-    fprintf('Similarity Ratio: %.4f\n', similarityRatio);
     similarity = similarityRatio;
 end
 
+function sharpenedImage = enhanceFeaturesAndEdges(inputImage)
+    % Apply unsharp masking to enhance features and edges
+    blurredImage = imgaussfilt(inputImage, 2);
+    highPassImage = inputImage - blurredImage;  
+    sharpeningAmount = 1.5; 
+    sharpenedImage = inputImage + sharpeningAmount * highPassImage;
+    
+    % Apply color enhancement to further improve the result
+    contrast_range = [0.1 0.9];
+    enhancedImage = imadjust(sharpenedImage, contrast_range, [0 1]);
+    sharpenedImage = enhancedImage;
+end
