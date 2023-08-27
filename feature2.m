@@ -1,8 +1,12 @@
 % Main code
-imageA = imread('D:\GitHub\Image_Processing_and_Computer_Vision_Assignment\Currency\20\R2.png'); % Load Diagram A image
-imageB = imread('D:\GitHub\Image_Processing_and_Computer_Vision_Assignment\Currency\20\R3.png'); % Load Diagram B image
+imageA = imread('D:\GitHub\Image_Processing_and_Computer_Vision_Assignment\Currency\100\R2.png'); % Load Diagram A image
+imageB = imread('D:\GitHub\Image_Processing_and_Computer_Vision_Assignment\Currency\Real\100.png'); % Load Diagram B image
 imageA = imresize(imageA, [344, 789]); % Resize to a common size
 imageB = imresize(imageB, [344, 789]); % Resize to a common size
+
+% Extract features from both images
+% imageA = extractEdges(smoothenImageA);
+% imageB = extractEdges(smoothenImageB);
 
 croppedImageA = cropImage(imageA);
 croppedImageB = cropImage(imageB);
@@ -10,9 +14,22 @@ croppedImageB = cropImage(imageB);
 enhancedImageA = enhanceFeaturesAndEdges(croppedImageA);
 enhancedImageB = enhanceFeaturesAndEdges(croppedImageB);
 
-% Extract features from both images
-featuresA = extractFeaturesA(enhancedImageA);
-featuresB = extractFeaturesB(enhancedImageB);
+%enhancedImageA = enhanceImageFeatures(croppedImageA);
+%enhancedImageB = enhanceImageFeatures(croppedImageB);
+
+smoothenImageA = imgaussfilt(enhancedImageA, 1);
+smoothenImageB = imgaussfilt(enhancedImageB, 1);
+
+featuresA = extractEdges(smoothenImageA);
+featuresB = extractEdges(smoothenImageB);
+
+subplot(1, 2, 1);
+imshow(featuresA);
+title('Image 1');
+
+subplot(1, 2, 2);
+imshow(featuresB);
+title('Image 2');
 
 % Compare the extracted features
 similarity = compareFeatures(featuresA, featuresB);
@@ -23,28 +40,6 @@ if similarity < threshold
     disp('Diagram A and Diagram B have similar features.');
 else
     disp('Diagram A and Diagram B do not have similar features.');
-end
-
-function featuresA = extractFeaturesA(imageA)
-    % Apply necessary image processing techniques to extract features from Diagram A
-    % Example: Convert to grayscale, perform spatial filtering, enhance contrast, and detect edges
-    grayA = rgb2gray(imageA);
-    filteredA = imfilter(grayA, fspecial('gaussian', [5 5], 2));
-    enhancedA = imadjust(filteredA, [0.3 0.7], [0 1]);
-    edgesA = edge(enhancedA, 'Canny');
-    
-    featuresA = edgesA; % Using edges as features for demonstration
-end
-
-function featuresB = extractFeaturesB(imageB)
-    % Apply necessary image processing techniques to extract features from Diagram B
-    % Example: Convert to grayscale, perform spatial filtering, enhance contrast, and detect edges
-    grayB = rgb2gray(imageB);
-    filteredB = imfilter(grayB, fspecial('gaussian', [5 5], 2));
-    enhancedB = imadjust(filteredB, [0.3 0.7], [0 1]);
-    edgesB = edge(enhancedB, 'Canny');
-    
-    featuresB = edgesB; % Using edges as features for demonstration
 end
 
 function similarity = compareFeatures(featuresA, featuresB)
@@ -67,36 +62,13 @@ end
 
 function croppedImage = cropImage(originalImage)
     % Define the cropping coordinates
-    topLeftRow = 250;    % Row index of the top-left corner
-    topLeftCol = 30;    % Column index of the top-left corner
+    topLeftRow = 270;    % Row index of the top-left corner
+    topLeftCol = 35;    % Column index of the top-left corner
     bottomRightRow = 344;% Row index of the bottom-right corner
     bottomRightCol = 100;% Column index of the bottom-right corner
     
     % Crop the image
     croppedImage = originalImage(topLeftRow:bottomRightRow, topLeftCol:bottomRightCol, :);
-end
-
-function matchedImage = matchColorDistribution(referenceImage, targetImage)
-    % Convert images to Lab color space
-    labReferenceImage = rgb2lab(referenceImage);
-    labTargetImage = rgb2lab(targetImage);
-
-    % Match histograms of Lab channels
-    matchedLabImage = labTargetImage;
-    for i = 1:3
-        matchedLabImage(:,:,i) = imhistmatch(labTargetImage(:,:,i), labReferenceImage(:,:,i));
-    end
-
-    % Convert matched Lab image back to RGB
-    matchedImage = lab2rgb(matchedLabImage);
-end
-
-function filteredImage = applyNoiseReduction(inputImage)
-    % Apply Gaussian filtering for noise reduction using imfilter
-    sigma = 2; % Adjust sigma as needed
-    kernelSize = 5; % Adjust kernel size as needed
-    gaussianKernel = fspecial('gaussian', [kernelSize kernelSize], sigma);
-    filteredImage = imfilter(inputImage, gaussianKernel, 'same');
 end
 
 function sharpenedImage = enhanceFeaturesAndEdges(inputImage)
@@ -105,5 +77,22 @@ function sharpenedImage = enhanceFeaturesAndEdges(inputImage)
     highPassImage = inputImage - blurredImage;  % High-pass filter
     sharpeningAmount = 1.5; % Adjust the sharpening amount as needed
     sharpenedImage = inputImage + sharpeningAmount * highPassImage;
+    
+    % Apply color enhancement to further improve the result
+    contrast_range = [0.1 0.9]; % Adjust contrast range for better visibility
+    enhancedImage = imadjust(sharpenedImage, contrast_range, [0 1]);
+    sharpenedImage = enhancedImage;
 end
+
+function edgesImage = extractEdges(image)
+    % Convert the image to grayscale
+    grayImage = rgb2gray(image);
+    
+    % Apply Canny edge detection
+    edges = edge(grayImage, 'Canny');
+    
+    % Return the edges image
+    edgesImage = edges;
+end
+
 
