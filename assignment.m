@@ -23,13 +23,13 @@ function fakeCurrencyDetectionGui()
         if fileName ~= 0
             selectedImagePath = fullfile(filePath, fileName);
             set(pathText, 'String', selectedImagePath);
-            set(resultText, 'String', ''); % Clear previous result message
+            set(resultText, 'String', '');
         end
     end
 
     % Callback function for the Run button
     function runButtonCallback(~, ~)
-        if isempty(selectedImagePath)
+        if numel(selectedImagePath) == 0
             msgbox('Please select an image first.', 'Error', 'error');
         else
             % 
@@ -40,7 +40,7 @@ function fakeCurrencyDetectionGui()
             if result
                 msgbox('The image is detected as real currency!', 'Success');
             else
-                msgbox('Please select an image first.', 'Error', 'error');
+                msgbox('The image is detected as fake currency!', 'Error', 'error');
             end
 
             %set(resultText, 'String', resultMessage);
