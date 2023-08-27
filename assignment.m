@@ -352,8 +352,6 @@ function fakeCurrencyDetectionGui()
             disp('Fake Currency: Target text not detected in input image.');
             result = false;
         end
-        
-        result = true;
     end
 
     
