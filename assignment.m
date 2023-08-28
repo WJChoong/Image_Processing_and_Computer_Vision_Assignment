@@ -206,7 +206,7 @@ function fakeCurrencyDetectionGui()
             
             % Apply Gaussian Filter
             sigma = 1; % Adjust sigma as needed
-            kernelSize = 4; % Adjust kernel size as needed
+            kernelSize = 3; % Adjust kernel size as needed
             gaussianKernel = fspecial('gaussian', [kernelSize kernelSize], sigma);
             filteredImage1 = imfilter(Ibw1, gaussianKernel, 'same');
                 
@@ -218,7 +218,7 @@ function fakeCurrencyDetectionGui()
             
             % Apply Gaussian Filter
             sigma = 1; % Adjust sigma as needed
-            kernelSize = 4; % Adjust kernel size as needed
+            kernelSize = 3; % Adjust kernel size as needed
             gaussianKernel = fspecial('gaussian', [kernelSize kernelSize], sigma);
             filteredImage2 = imfilter(Ibw2, gaussianKernel, 'same');
         
@@ -364,7 +364,14 @@ function fakeCurrencyDetectionGui()
     
         % Enhance the input image to improve OCR accuracy
         enhancedImageInput = enhanceImage(croppedTopMiddleImage);
-    
+
+        % Create a figure
+        figure;
+        
+        % Display the enhanced input image
+        imshow(enhancedImageInput);
+        title('Enhanced Input Currency Image');
+            
         % Use Tesseract to perform OCR on the enhanced image
         ocrResultInput = ocr(enhancedImageInput, 'TextLayout', 'Block', 'CharacterSet', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
     
@@ -375,6 +382,10 @@ function fakeCurrencyDetectionGui()
         recognizedTextInputProcessed = strrep(recognizedTextInput, ' ', '');
         recognizedTextInputProcessed = strrep(recognizedTextInputProcessed, newline, '');
      
+        disp('Extracted Text from Input Image:');
+        disp(recognizedTextInputProcessed);
+
+
         % Convert recognized text to uppercase
         recognizedTextInputUpper = upper(recognizedTextInputProcessed);
     
