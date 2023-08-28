@@ -9,10 +9,10 @@ function fakeCurrencyDetectionGui()
     resultText = uicontrol('Style', 'text', 'Position', [50, 150, 300, 30], 'HorizontalAlignment', 'center');
 
      % Create radio buttons
-    radioMethod1 = uicontrol('Style', 'radio', 'String', '10', 'Position', [50, 160, 100, 20], 'Tag', 'method1');
-    radioMethod2 = uicontrol('Style', 'radio', 'String', '20', 'Position', [150, 160, 100, 20], 'Tag', 'method2');
-    radioMethod3 = uicontrol('Style', 'radio', 'String', '50', 'Position', [250, 160, 100, 20], 'Tag', 'method3');
-    radioMethod4 = uicontrol('Style', 'radio', 'String', '100', 'Position', [350, 160, 100, 20], 'Tag', 'method4');
+    radioMethod1 = uicontrol('Style', 'radio', 'String', '10', 'Position', [50, 160, 100, 20], 'Tag', 'method1', 'Callback', @radioMethod1Callback);
+    radioMethod2 = uicontrol('Style', 'radio', 'String', '20', 'Position', [150, 160, 100, 20], 'Tag', 'method2', 'Callback', @radioMethod2Callback);
+    radioMethod3 = uicontrol('Style', 'radio', 'String', '50', 'Position', [250, 160, 100, 20], 'Tag', 'method3', 'Callback', @radioMethod3Callback);
+    radioMethod4 = uicontrol('Style', 'radio', 'String', '100', 'Position', [350, 160, 100, 20], 'Tag', 'method4', 'Callback', @radioMethod4Callback);
 
     result1 = uicontrol('Style', 'text', 'Position', [50, 100, 300, 30], 'HorizontalAlignment', 'center');
     result2 = uicontrol('Style', 'text', 'Position', [50, 80, 300, 30], 'HorizontalAlignment', 'center');
@@ -30,6 +30,38 @@ function fakeCurrencyDetectionGui()
             set(pathText, 'String', selectedImagePath);
             set(resultText, 'String', '');
         end
+    end
+
+    % Callback function for radioMethod1
+    function radioMethod1Callback(~, ~)
+        set(radioMethod1, 'Value', 1);
+        set(radioMethod2, 'Value', 0);
+        set(radioMethod3, 'Value', 0);
+        set(radioMethod4, 'Value', 0);
+    end
+
+    % Callback function for radioMethod2
+    function radioMethod2Callback(~, ~)
+        set(radioMethod1, 'Value', 0);
+        set(radioMethod2, 'Value', 1);
+        set(radioMethod3, 'Value', 0);
+        set(radioMethod4, 'Value', 0);
+    end
+
+    % Callback function for radioMethod3
+    function radioMethod3Callback(~, ~)
+        set(radioMethod1, 'Value', 0);
+        set(radioMethod2, 'Value', 0);
+        set(radioMethod3, 'Value', 1);
+        set(radioMethod4, 'Value', 0);
+    end
+
+    % Callback function for radioMethod4
+    function radioMethod4Callback(~, ~)
+        set(radioMethod1, 'Value', 0);
+        set(radioMethod2, 'Value', 0);
+        set(radioMethod3, 'Value', 0);
+        set(radioMethod4, 'Value', 1);
     end
 
     % Callback function for the Run button
