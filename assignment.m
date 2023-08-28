@@ -206,7 +206,7 @@ function fakeCurrencyDetectionGui()
             
             % Apply Gaussian Filter
             sigma = 1; % Adjust sigma as needed
-            kernelSize = 4; % Adjust kernel size as needed
+            kernelSize = 3; % Adjust kernel size as needed
             gaussianKernel = fspecial('gaussian', [kernelSize kernelSize], sigma);
             filteredImage1 = imfilter(Ibw1, gaussianKernel, 'same');
                 
@@ -218,7 +218,7 @@ function fakeCurrencyDetectionGui()
             
             % Apply Gaussian Filter
             sigma = 1; % Adjust sigma as needed
-            kernelSize = 4; % Adjust kernel size as needed
+            kernelSize = 3; % Adjust kernel size as needed
             gaussianKernel = fspecial('gaussian', [kernelSize kernelSize], sigma);
             filteredImage2 = imfilter(Ibw2, gaussianKernel, 'same');
         
