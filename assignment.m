@@ -200,13 +200,20 @@ function cosineSim = compareHOGFeatures(image1, image2)
     grayImage1 = rgb2gray(image1);
     grayImage2 = rgb2gray(image2);
 
+    % Set the binarization threshold (adjust as needed)
+    threshold = 128;
+    
+    % Binarize the image using the threshold
+    binaryImage1 = grayImage1 > threshold;
+    binaryImage2 = grayImage2 > threshold;
+
     % Define HOG parameters
     cellSize = [4 4]; % Size of each cell
     numBins = 9;      % Number of histogram bins
 
     % Compute HOG features for the two images
-    hogFeatures1 = extractHOGFeatures(grayImage1, 'CellSize', cellSize, 'NumBins', numBins);
-    hogFeatures2 = extractHOGFeatures(grayImage2, 'CellSize', cellSize, 'NumBins', numBins);
+    hogFeatures1 = extractHOGFeatures(binaryImage1, 'CellSize', cellSize, 'NumBins', numBins);
+    hogFeatures2 = extractHOGFeatures(binaryImage2, 'CellSize', cellSize, 'NumBins', numBins);
     hogFeatures1 = double(hogFeatures1);
     hogFeatures2 = double(hogFeatures2);
 
@@ -214,6 +221,7 @@ function cosineSim = compareHOGFeatures(image1, image2)
     cosineSimilarity = dot(hogFeatures1, hogFeatures2) / (norm(hogFeatures1) * norm(hogFeatures2));
 
     % Display the cosine similarity
+    disp(['Cosine Similarity: ', num2str(cosineSimilarity)]);
     cosineSim = cosineSimilarity;
 end
 
